@@ -4,17 +4,20 @@ package org.nyu.mapreduce;
 import java.io.IOException;
 import java.util.*;
 
+import javax.swing.text.html.HTML;
+
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-//import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.clueweb.clueweb09.ClueWeb09WarcRecord;
 import org.clueweb.clueweb09.mapreduce.ClueWeb09InputFormat;
 import org.apache.log4j.Logger;
+import org.jsoup.*;
+import org.jsoup.nodes.*;
 
         
 public class WarcMapReduce {
@@ -27,10 +30,13 @@ public class WarcMapReduce {
 	    	Integer docSize = doc.getTotalRecordLength();
 	    	String docid = doc.getHeaderMetadataItem("WARC-TREC-ID");
 	    
+	    	// Get the text from the HTML document 
 	    	String docContent = doc.getContent();
+	    	Document parsedDoc = Jsoup.parse(docContent);
+	    	String docText = parsedDoc.text();
 	    	
 	    	// find the unique words
-	    	String[] words = docContent.split("[!-~]* ");
+	    	String[] words = docText.split(" ");
 	    	Set<String> uniqueWords = new HashSet<String>();
 
 	    	for (String word : words) {
