@@ -99,7 +99,6 @@
 	<classpathentry kind="lib" path="/usr/lib/hadoop/client/hadoop-mapreduce-client-app-2.6.0-cdh5.4.2.jar"/>
 	<classpathentry kind="lib" path="/usr/lib/hadoop/client/hadoop-mapreduce-client-common.jar"/>
 	<classpathentry kind="lib" path="/usr/lib/hadoop/client/hadoop-mapreduce-client-common-2.6.0-cdh5.4.2.jar"/>
-	<classpathentry kind="lib" path="/usr/lib/hadoop/client/hadoop-mapreduce-client-core.jar"/>
 	<classpathentry kind="lib" path="/usr/lib/hadoop/client/hadoop-mapreduce-client-core-2.6.0-cdh5.4.2.jar"/>
 	<classpathentry kind="lib" path="/usr/lib/hadoop/client/hadoop-mapreduce-client-jobclient.jar"/>
 	<classpathentry kind="lib" path="/usr/lib/hadoop/client/hadoop-mapreduce-client-jobclient-2.6.0-cdh5.4.2.jar"/>
@@ -167,5 +166,6 @@
 	<classpathentry kind="lib" path="/usr/lib/hadoop/client/xz.jar"/>
 	<classpathentry kind="lib" path="/usr/lib/hadoop/client/xz-1.0.jar"/>
 	<classpathentry kind="lib" path="/usr/lib/hadoop/client/zookeeper.jar"/>
+	<classpathentry kind="lib" path="/usr/lib/hadoop/clueweb.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
