@@ -1,5 +1,5 @@
-
 package org.nyu.mapreduce;
+
 
 import java.io.IOException;
 import java.util.*;
@@ -18,11 +18,11 @@ import org.jsoup.*;
 import org.jsoup.nodes.*;
 
         
-public class WarcMapReduce {
+public class WarcPagesWithUniqueTerms {
 	
-	private static final Logger LOG = Logger.getLogger(WarcMapReduce.class);
+	private static final Logger LOG = Logger.getLogger(WarcPagesWithUniqueTerms.class);
         
-	public static class Map extends Mapper<LongWritable, ClueWeb09WarcRecord, Text, Text> {
+	public static class Map extends Mapper<LongWritable, ClueWeb09WarcRecord, IntWritable, Text> {
 	        
 	    public void map(LongWritable key, ClueWeb09WarcRecord doc, Context context) throws IOException, InterruptedException {    	
 	    	Integer docSize = doc.getTotalRecordLength();
@@ -47,35 +47,43 @@ public class WarcMapReduce {
 	    	docArray[1] = uniqueWordsCount.toString();
 	    	
 	    	if (docid != null) {
-	    		context.write(new Text(docid), new Text(docArray[0] + " " + docArray[1]));
+	    		context.write(new IntWritable(uniqueWordsCount), new Text(docid));
 	    	}
 	    	
 	    	
 	    }
 	} 
 	        
-	public static class Reduce extends Reducer<Text, IntWritable, Text, Text> {
-	    public void reduce(Text key, Iterator<IntWritable> values, Context context) 
+	public static class Reduce extends Reducer<IntWritable, Text, IntWritable, Text> {
+		private Text result = new Text();
+		
+	    public void reduce(IntWritable key, Iterable<Text> values, Context context) 
 	      throws IOException, InterruptedException {	
-	    	String output = "";
-	        while (values.hasNext()) {
-	        	output += " " +  values.next().get(); 
+	    	String output = result.toString();
+//	        while (values.hasNext()) {
+//	        	output += ", " +  values.next().get(); 
+//	        }
+	        
+	        for (Text val : values) {
+	        	output += ", " + val.toString();
 	        }
 	        
-	        context.write(key, new Text(output));
+	        result.set(output);
+	        context.write(key, result);
 	    }
 	}
 	        
 	public static void main(String[] args) throws Exception {
 	    Configuration conf = new Configuration();
 	        
-	    Job job = new Job(conf, "WarcMapReduce!");
-	    job.setJarByClass(WarcMapReduce.class);
+	    Job job = new Job(conf, "Warc pages with unique terms!");
+	    job.setJarByClass(WarcPagesWithUniqueTerms.class);
 	    
-	    job.setOutputKeyClass(Text.class);	
+	    job.setOutputKeyClass(IntWritable.class);	
 	    job.setOutputValueClass(Text.class);
 	        
 	    job.setMapperClass(Map.class);
+	    job.setCombinerClass(Reduce.class);
 	    job.setReducerClass(Reduce.class);
 	     
 	    job.setInputFormatClass(ClueWeb09InputFormat.class);
