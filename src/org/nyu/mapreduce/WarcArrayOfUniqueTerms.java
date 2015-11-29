@@ -1,5 +1,5 @@
-
 package org.nyu.mapreduce;
+
 
 import java.io.IOException;
 import java.util.*;
@@ -18,9 +18,9 @@ import org.jsoup.*;
 import org.jsoup.nodes.*;
 
         
-public class WarcMapReduce {
+public class WarcArrayOfUniqueTerms {
 	
-	private static final Logger LOG = Logger.getLogger(WarcMapReduce.class);
+	private static final Logger LOG = Logger.getLogger(WarcArrayOfUniqueTerms.class);
         
 	public static class Map extends Mapper<LongWritable, ClueWeb09WarcRecord, Text, Text> {
 	        
@@ -47,7 +47,7 @@ public class WarcMapReduce {
 	    	docArray[1] = uniqueWordsCount.toString();
 	    	
 	    	if (docid != null) {
-	    		context.write(new Text(docid), new Text(docArray[0] + " " + docArray[1]));
+	    		context.write(new Text(docid), new Text(uniqueWords.toString()));
 	    	}
 	    	
 	    	
@@ -70,7 +70,7 @@ public class WarcMapReduce {
 	    Configuration conf = new Configuration();
 	        
 	    Job job = new Job(conf, "WarcMapReduce!");
-	    job.setJarByClass(WarcMapReduce.class);
+	    job.setJarByClass(WarcArrayOfUniqueTerms.class);
 	    
 	    job.setOutputKeyClass(Text.class);	
 	    job.setOutputValueClass(Text.class);

@@ -23,7 +23,8 @@ public class WarcPagesWithUniqueTerms {
 	private static final Logger LOG = Logger.getLogger(WarcPagesWithUniqueTerms.class);
         
 	public static class Map extends Mapper<LongWritable, ClueWeb09WarcRecord, IntWritable, Text> {
-	        
+	    private IntWritable mapKey = new IntWritable();
+		
 	    public void map(LongWritable key, ClueWeb09WarcRecord doc, Context context) throws IOException, InterruptedException {    	
 	    	Integer docSize = doc.getTotalRecordLength();
 	    	String docid = doc.getHeaderMetadataItem("WARC-TREC-ID");
@@ -47,7 +48,8 @@ public class WarcPagesWithUniqueTerms {
 	    	docArray[1] = uniqueWordsCount.toString();
 	    	
 	    	if (docid != null) {
-	    		context.write(new IntWritable(uniqueWordsCount), new Text(docid));
+	    		mapKey.set(uniqueWordsCount);
+	    		context.write(mapKey, new Text(docid));
 	    	}
 	    	
 	    	
@@ -59,13 +61,10 @@ public class WarcPagesWithUniqueTerms {
 		
 	    public void reduce(IntWritable key, Iterable<Text> values, Context context) 
 	      throws IOException, InterruptedException {	
-	    	String output = result.toString();
-//	        while (values.hasNext()) {
-//	        	output += ", " +  values.next().get(); 
-//	        }
+	    	String output = "";
 	        
 	        for (Text val : values) {
-	        	output += ", " + val.toString();
+	        	output += val.toString() + " ";
 	        }
 	        
 	        result.set(output);
